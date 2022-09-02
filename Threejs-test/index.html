@@ -1,0 +1,81 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>ThreeJS-Test1</title>
+
+</head>
+
+<body>
+    <!-- particles.js container -->
+    <div id="particles-js"></div>
+
+    <script src="./js/particles.js"></script>
+    <script src="./js/app-new.js"></script>
+    <link rel="stylesheet" media="screen" href="./css/style-new.css">
+    
+    <!-- <script language="javascript" src="https://raw.githack.com/VincentGarreau/particles.js/master/particles.js?content-type=application"></script>
+    <script src="https://raw.githack.com/VincentGarreau/particles.js/master/demo/js/app.js"></script>
+    <link rel="stylesheet" media="screen" href="https://raw.githack.com/VincentGarreau/particles.js/master/demo/css/style.css"> -->
+
+
+    <script type="module">
+        import * as THREE from "http://cdn.skypack.dev/three@0.130.0";
+        import { OrbitControls } from 'http://cdn.skypack.dev/three@0.130.0/examples/jsm/controls/OrbitControls.js';
+
+        const scene = new THREE.Scene();
+        scene.background = null;
+
+		const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+		const renderer = new THREE.WebGLRenderer({ antialias:true, alpha: true });
+		renderer.setSize( window.innerWidth, window.innerHeight );
+        // renderer.setClearAlpha(0);
+        renderer.domElement.style.position = 'absolute';
+        renderer.domElement.style.left = '0px';
+        renderer.domElement.style.top = '0px';
+
+		document.body.appendChild( renderer.domElement );
+
+        // const controls = new OrbitControls(camera, renderer.domElement)
+
+        const geometry = new THREE.BoxGeometry( 1, 1, 1 );
+        const textureLoader = new THREE.TextureLoader();
+        const texture = textureLoader.load("src/texture.jpg")
+        const material = new THREE.MeshBasicMaterial( { map: texture } );
+        // const material = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+        const cube = new THREE.Mesh( geometry, material );
+        cube.rotation.y += Math.PI/4;
+        scene.add( cube );
+
+        camera.position.z = 5;
+
+        // renderer.render( scene, camera );
+
+        const cursor = {x: 0, y: 0}
+        window.addEventListener("mousemove", event => {
+            cursor.x = event.clientX / window.innerWidth - 0.5
+            cursor.y = event.clientY / window.innerHeight - 0.5
+        })
+
+        function animate() {
+        	requestAnimationFrame( animate );
+
+            cube.rotation.x += 0.01;
+			cube.rotation.y += 0.01;
+
+            const cameraDestinationX = cursor.x;
+            const cameraDestinationY = - cursor.y;
+            camera.position.x += (cameraDestinationX - camera.position.x) / 10;
+            camera.position.y += (cameraDestinationY - camera.position.y) / 10;
+            // controls.update(); 
+
+        	renderer.render( scene, camera );
+        }
+        animate();
+    </script>
+
+</body>
+
+</html>
